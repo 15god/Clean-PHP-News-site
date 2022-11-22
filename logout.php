@@ -1,5 +1,4 @@
 <?php
-setcookie('email','$email', time()-1, '/');
-setcookie('password','$password', time()-1, '/');
+session_start();
+unset($_SESSION["id"]);
 header("Location: /");
- ?>
