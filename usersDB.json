@@ -1,17 +1,22 @@
-[{
+[
+    {
         "login": "123",
         "password": "123",
         "email": "1234@mail.ru"
-    }, {
+    },
+    {
         "login": "1234",
         "password": "1234",
         "email": "1234@mail.ru"
-    }, {
+    },
+    {
         "login": "55",
         "password": "55",
         "email": "55@mail.ru"
-    }, {
+    },
+    {
         "login": "5555",
         "password": "5555",
         "email": "5555@5555"
-    }]
+    }
+]

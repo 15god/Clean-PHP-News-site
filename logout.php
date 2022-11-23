@@ -1,4 +1,5 @@
 <?php
 session_start();
-unset($_SESSION["id"]);
+session_destroy();
+setcookie('userKey', '', -1, '/');
 header("Location: /");

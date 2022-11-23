@@ -1,10 +1,12 @@
 <?php
-
 session_start();
 if (!empty($_POST)) {
     require "functions.php";
     $userInfo = inputDataFormat();
     if (checkAuth($userInfo)) {
+        if(isset($_POST['cookieCheckBox'])) {
+            setcookie('userKey', md5($userInfo["login"]), 0, '/');
+        }
         $_SESSION["id"] = session_id();
         header("Location: /");
     } else {
