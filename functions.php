@@ -1,47 +1,56 @@
 <?php
 
-function checkAuth(array $userInfo): bool {
-    $infoJSON = json_decode(file_get_contents("usersDB.json"), true);
-    foreach ($infoJSON as $user) {
-        if (md5($user['login']) === md5($userInfo["login"])) {
-            if (md5($user['password']) === md5($userInfo["password"])) {
-                return true;
-            }
-            return false;
+define("SALT", "dflsk;flsdk125");
+
+function checkAuth(array $userInfo): bool { // Auth check
+    $mysqlConnection = new mysqli('localhost','root','12344321','db');
+    $result = mysqli_query($mysqlConnection, "SELECT * FROM `users` WHERE
+    `login` = '{$userInfo['login']}' AND
+    `password` = '{$userInfo['password']}'");
+        if (mysqli_num_rows($result) !== 0) {
+            $mysqlConnection -> close();
+            return true;
         }
-    }
+    $mysqlConnection -> close();
     return false;
 }
 
-function userReg(array $newUserInfo): bool {
-    $infoJSON = json_decode(file_get_contents("usersDB.json"), true);
-    foreach ($infoJSON as $user) {
-        if ($user["email"] == $newUserInfo["email"] || $user["login"] == $newUserInfo["login"]) {
-            return false;
-        }
+function userReg(array $newUserInfo): bool { // New user registration
+    $mysqlConnection = new mysqli('localhost','root','12344321','db');
+    $result = mysqli_query($mysqlConnection, "SELECT `login`, `email` FROM `users` WHERE
+    `login` = '{$newUserInfo['login']}' OR
+    `email` = '{$newUserInfo['email']}'");
+    if (mysqli_num_rows($result) !== 0) {
+        $mysqlConnection -> close();
+        return false;
     }
-    $infoJSON[] = $newUserInfo;
-    file_put_contents("usersDB.json", json_encode($infoJSON, JSON_PRETTY_PRINT));
+    $date = date('Y-m-d H:i:s');
+    mysqli_query($mysqlConnection, "INSERT INTO `users` (`login`, `password`, `email`, `reg_date`)
+    VALUES ('{$newUserInfo['login']}', '{$newUserInfo['password']}', '{$newUserInfo['email']}', '$date')");
+    $mysqlConnection -> close();
     return true;
 }
 
-function inputDataFormat() {
+function inputDataFormat() { // Standartdizing data from post
     $userInfo = [
-        "login" => trim(htmlspecialchars($_POST["login"])),
-        "password" => trim(htmlspecialchars($_POST["password"]))
+        "login" => htmlspecialchars(trim($_POST["login"])),
+        "password" => md5(htmlspecialchars(trim($_POST["password"])) . SALT)
     ];
     if (!empty($_POST['email'])) {
-        $userInfo["email"] = filter_var(htmlspecialchars($_POST["email"]), FILTER_SANITIZE_EMAIL);
+        $userInfo["email"] = filter_var($_POST["email"], FILTER_SANITIZE_EMAIL);
     }
     return $userInfo;
 }
 
-function autoLogin() {
-    $infoJSON = json_decode(file_get_contents("usersDB.json"), true);
-    foreach ($infoJSON as $user) {
-        if ($_COOKIE['userKey'] === md5($user['login'])) {
-            return true;
+function autoLogin() { // Cookie login check
+    if (isset($_COOKIE['userKey'])) {
+        $id = substr($_COOKIE['userKey'], 0, strpos($_COOKIE['userKey'], "_"));
+        $mysqlConnection = new mysqli('localhost','root','12344321','db');
+        $result = mysqli_query($mysqlConnection,"SELECT `id`, `login` FROM `users` WHERE `id` = '{$id}'");
+        $resultArray = mysqli_fetch_assoc($result);
+        if ($_COOKIE['userKey'] === $resultArray['id'] . '_' . md5($resultArray['login'] . SALT)) {
+            $_SESSION["user"] = $resultArray['login'];
+            $mysqlConnection -> close();
         }
     }
-    return false;
 }

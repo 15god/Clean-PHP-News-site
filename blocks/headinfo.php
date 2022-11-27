@@ -1,10 +1,6 @@
 <?php
-if (isset($_COOKIE['userKey'])) {
-    require "functions.php";
-    if (autoLogin()) {
-        $_SESSION["id"] = session_id();
-    }
-}
+require "functions.php";
+ autoLogin();
 ?>
 <meta charset="UTF-8" lang="ru">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
