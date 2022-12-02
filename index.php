@@ -7,6 +7,6 @@
         <title>1st PHP Site</title>
     </head>
     <body>
-        <?php require "blocks/header.php"; ?>
+        <?php require "blocks/header.php";?>
     </body>
 </html>
