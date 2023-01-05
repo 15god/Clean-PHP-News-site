@@ -14,9 +14,11 @@ if (!empty($_POST)) {
             $mysql -> close;
         }
         header("Location: /");
+        exit;
     } 
     else {
         $_SESSION['message'] = "Wrong login or password";
         header("Location: auth.php");
+        exit;
     }
 }

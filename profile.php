@@ -1,5 +1,9 @@
 <?php session_start();
 require "dbconfig.php";
+if(!isset($_SESSION['userid'])) {
+    header("Location: /");
+    exit;
+}
 if (!empty($_FILES['profile_pic']) && $_FILES['profile_pic']['error']=== 0) {
     $path = 'uploads/' . $_FILES['profile_pic']['name'];
     move_uploaded_file($_FILES['profile_pic']['tmp_name'] , $path);
@@ -9,24 +13,13 @@ if (!empty($_FILES['profile_pic']) && $_FILES['profile_pic']['error']=== 0) {
         $imagick ->writeImage();
     }
     $imagick -> clear();
-    /**
-     * 
-    $ext = pathinfo($path, PATHINFO_EXTENSION);
-     * 
-     */
     $newPath = 'uploads/' . 'user' . $_SESSION['userid'] . 'source.jpg';
     rename($path, $newPath);
-    /**
-     * хрень
-     */
-    if(file_exists('uploads/' . 'user' . $_SESSION['userid'] . 'big.jpg')) {
-        unlink('uploads/' . 'user' . $_SESSION['userid'] . 'big.jpg');
-    }
-    if(file_exists('uploads/' . 'user' . $_SESSION['userid'] . 'medium.jpg')) {
-        unlink('uploads/' . 'user' . $_SESSION['userid'] . 'medium.jpg');
-    }
-    if(file_exists('uploads/' . 'user' . $_SESSION['userid'] . 'small.jpg')) {
-        unlink('uploads/' . 'user' . $_SESSION['userid'] . 'small.jpg');
+    $sizes = array('big','medium','small');
+    foreach ($sizes as $size) {
+        if(file_exists('uploads/' . 'user' . $_SESSION['userid'] . $size . '.jpg')) {
+            unlink('uploads/' . 'user' . $_SESSION['userid'] . $size . '.jpg');
+        }
     }
     unset($_FILES);
 }

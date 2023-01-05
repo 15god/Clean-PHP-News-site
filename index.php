@@ -8,5 +8,6 @@
     </head>
     <body>
         <?php require "blocks/header.php";?>
+        <a class="ml-5" href="album.php">Перейти в альбом</a>
     </body>
 </html>

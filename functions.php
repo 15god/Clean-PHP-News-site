@@ -105,36 +105,27 @@ function flashMsg() {
     }
 }
 
-function getImage($size): string {
-
-    $defaultPath = 'uploads/' . 'user' . $_SESSION['userid'];
-    if (!file_exists($defaultPath . 'source.jpg')) {
-        return 'uploads/defaultimg' . $size . ".jpg";
-    }
-    else if (file_exists($defaultPath . $size . '.jpg')) {
+function getImage(string $size = 'small'): string {
+    
+    $sizes = [
+        'big' => 300,
+        'medium' => 150,
+        'small' => 60
+    ];
+    if(array_key_exists($size, $sizes)) {
+        $defaultPath = 'uploads/' . 'user' . $_SESSION['userid'];
+        if (!file_exists($defaultPath . 'source.jpg')) {
+            return 'uploads/defaultimg' . $size . ".jpg";
+        }
+        else if (file_exists($defaultPath . $size . '.jpg')) {
+            return $defaultPath . $size . '.jpg';
+        }
+        $path = $_SERVER['DOCUMENT_ROOT'] . "/" . $defaultPath . 'source.jpg';
+        $imagick = new Imagick($path);
+        $imagick->cropThumbnailImage($sizes[$size], $sizes[$size], Imagick::FILTER_LANCZOS);
+        $imagick->writeImage($_SERVER['DOCUMENT_ROOT'] . "/" . $defaultPath . $size . '.jpg');
+        $imagick->clear();
         return $defaultPath . $size . '.jpg';
     }
-    $path = $_SERVER['DOCUMENT_ROOT'] . "/" . $defaultPath . 'source.jpg';
-    $imagick = new Imagick($path);
-    /*
-      $w = $path -> getImageWidth();
-      $h = $path -> getImageHeight();
-      if ($w > $h) {
-      $path ->cropImage($w, $h, $w/2, $h/2);
-      $path ->readImage()
-     */
-    switch ($size) {
-        case 'big':
-            $imagick->cropThumbnailImage(300, 300, Imagick::FILTER_LANCZOS);
-            break;
-        case 'medium':
-            $imagick->cropThumbnailImage(150, 150, Imagick::FILTER_LANCZOS);
-            break;
-        case 'small':
-            $imagick->cropThumbnailImage(60, 60, Imagick::FILTER_LANCZOS);
-            break;
-    }
-    $imagick->writeImage($_SERVER['DOCUMENT_ROOT'] . "/" . $defaultPath . $size . '.jpg');
-    $imagick->clear();
-    return $defaultPath . $size . '.jpg';
+    return '#';
 }
