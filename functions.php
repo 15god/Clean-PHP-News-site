@@ -1,7 +1,4 @@
 <?php
-require_once "dbconfig.php";
-
-define("SALT", "dflsk;flsdk125");
 
 function checkAuth(array $userInfo): bool { // Auth check
     $mysql = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
@@ -51,37 +48,22 @@ function inputDataFormat() { // Standartdizing data from post
     return $userInfo;
 }
 
-function autoLogin() { // Cookie login check
-    if (isset($_COOKIE['userKey'])) {
-        $id = explode("_", $_COOKIE['userKey']);
-        $mysql = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $result = mysqli_query($mysql, 'SELECT `id`, `login` FROM `users` WHERE `id` = "' . $id[0] . '"');
-        $resultArray = mysqli_fetch_assoc($result);
-        if ($_COOKIE['userKey'] === $resultArray['id'] . '_' . md5($resultArray['login'] . SALT)) {
-            $_SESSION['user'] = $resultArray['login'];
-            $mysql->close();
-        }
-    }
-}
 
 function validateData() {
     if (mb_strlen($_POST['login']) < 6 || mb_strlen($_POST['login']) > 30) {
         $_SESSION['message'] = "Login must be between 6 and 30 characters";
-        header("Location: reg.php");
+        header("Location: /reg");
         exit;
     } elseif (mb_strlen($_POST['password']) < 8) {
         $_SESSION['message'] = "Password must be at least 8 characters";
-        header("Location: reg.php");
+        header("Location: /reg");
         exit;
     } elseif (mb_strlen($_POST['email']) < 4) {
         $_SESSION['message'] = "Email must be at least 4 characters";
-        header("Location: reg.php");
+        header("Location: /reg");
         exit;
     }
 }
-?>
-
-<?php
 
 function flashMsg() {
     if (!empty($_SESSION['message'])) {
@@ -89,16 +71,16 @@ function flashMsg() {
             ?>
             <div class="alert alert-success mt-2" role="alert">
                 <?php
-                echo $msg = $_SESSION['message'];
+                echo $_SESSION['message'];
                 unset($_SESSION['message']);
                 ?>
             </div>
-            <?php else: ?>
+        <?php else: ?>
             <div class="alert alert-danger mt-2" role="alert">
-            <?php
-            echo $msg = $_SESSION['message'];
-            unset($_SESSION['message']);
-            ?>
+                <?php
+                echo $msg = $_SESSION['message'];
+                unset($_SESSION['message']);
+                ?>
             </div>
         <?php
         endif;
@@ -106,18 +88,17 @@ function flashMsg() {
 }
 
 function getImage(string $size = 'small'): string {
-    
+
     $sizes = [
         'big' => 300,
         'medium' => 150,
         'small' => 60
     ];
-    if(array_key_exists($size, $sizes)) {
+    if (array_key_exists($size, $sizes)) {
         $defaultPath = 'uploads/' . 'user' . $_SESSION['userid'];
         if (!file_exists($defaultPath . 'source.jpg')) {
             return 'uploads/defaultimg' . $size . ".jpg";
-        }
-        else if (file_exists($defaultPath . $size . '.jpg')) {
+        } elseif (file_exists($defaultPath . $size . '.jpg')) {
             return $defaultPath . $size . '.jpg';
         }
         $path = $_SERVER['DOCUMENT_ROOT'] . "/" . $defaultPath . 'source.jpg';
@@ -128,4 +109,15 @@ function getImage(string $size = 'small'): string {
         return $defaultPath . $size . '.jpg';
     }
     return '#';
+}
+
+function disposeData($value){
+    echo "<pre>";
+    var_dump($value);
+    echo "</pre>";
+    die();
+}
+define('BASE_PATH',__DIR__);
+function basePath($path){
+    return BASE_PATH . '/' . $path;
 }
