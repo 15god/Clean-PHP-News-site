@@ -3,7 +3,7 @@ $(".ajax").on("click", function () {
     var parentDiv = $(this).closest('div.col');
     var delete_var = 'deletePhoto';
     $.ajax({
-        url: 'albumController.php',
+        url: '/album',
         type: 'POST',
         data: {'filename': filename, 'delete_var':delete_var},
         success: function () {
