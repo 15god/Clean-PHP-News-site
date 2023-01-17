@@ -1,1 +1,4 @@
-/nbproject/private/
+/nbproject
+*.log
+План действий.txt
+desktop.ini
