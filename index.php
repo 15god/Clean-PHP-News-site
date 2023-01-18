@@ -1,5 +1,6 @@
 <?php
 
+$config = require "dbconfig.php";
+require "Database.php";
 require "functions.php";
-require "dbconfig.php";
 require "router.php";

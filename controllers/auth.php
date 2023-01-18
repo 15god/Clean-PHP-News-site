@@ -5,7 +5,7 @@ if (!empty($_POST)) {
     $userInfo = inputDataFormat();
     if (checkAuth($userInfo)) {
         if (isset($_POST['cookieCheckBox'])) {
-            $mysql = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+            $mysql = new mysqli('localhost', 'root', 12344321, 'db');
             $result = mysqli_query($mysql,
                     'SELECT `id` FROM `users` WHERE `login` = "' . $userInfo['login'] . '"');
             $resultArray = mysqli_fetch_assoc($result);

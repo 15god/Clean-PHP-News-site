@@ -1,7 +1,8 @@
 <?php
 
+define("SALT", "dflsk;flsdk125");
 function checkAuth(array $userInfo): bool { // Auth check
-    $mysql = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+    $mysql = new mysqli('localhost', 'root', 12344321, 'db');
     $result = mysqli_query($mysql, 'SELECT * FROM `users` WHERE
     `login` = "' . $userInfo['login'] . '" AND
     `password` = "' . $userInfo['password'] . '"');
@@ -12,15 +13,13 @@ function checkAuth(array $userInfo): bool { // Auth check
         mysqli_query($mysql, 'UPDATE `users`
         SET `last_auth_date` = "' . date('Y-m-d H:i:s') . '"
         WHERE `login` = "' . $userInfo['login'] . '"');
-        $mysql->close();
         return true;
     }
-    $mysql->close();
     return false;
 }
 
 function userReg(array $newUserInfo): bool { // New user registration
-    $mysql = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+    $mysql = new mysqli('localhost', 'root', 12344321, 'db');
     $result = mysqli_query($mysql, 'SELECT `login`, `email` FROM `users` WHERE
     `login` = "' . $newUserInfo['login'] . '" OR
     `email` = "' . $newUserInfo['email'] . '"');

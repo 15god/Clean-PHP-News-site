@@ -2,6 +2,7 @@
 
 session_start();
 $siteTitle = "Home";
+/**
 $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 $query = "SELECT * FROM news WHERE id =?";
 $stmt = mysqli_stmt_init($mysqli);
@@ -11,5 +12,7 @@ mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $resultArray = mysqli_fetch_assoc($result);
 $mysqli->close();
-disposeData($resultArray);
+ **/
+$db = new Database($config);
+$post = $db->query("SELECT * FROM news WHERE id =:id", [':id' => $_GET['id']])->fetch();
 require "views/news.view.php";
