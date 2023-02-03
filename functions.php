@@ -1,41 +1,8 @@
 <?php
 
 define("SALT", "dflsk;flsdk125");
-function checkAuth(array $userInfo): bool { // Auth check
-    $mysql = new mysqli('localhost', 'root', 12344321, 'db');
-    $result = mysqli_query($mysql, 'SELECT * FROM `users` WHERE
-    `login` = "' . $userInfo['login'] . '" AND
-    `password` = "' . $userInfo['password'] . '"');
-    if (mysqli_num_rows($result) !== 0) {
-        $resultArray = mysqli_fetch_assoc($result);
-        $_SESSION["login"] = $userInfo["login"];
-        $_SESSION["userid"] = $resultArray['id'];
-        mysqli_query($mysql, 'UPDATE `users`
-        SET `last_auth_date` = "' . date('Y-m-d H:i:s') . '"
-        WHERE `login` = "' . $userInfo['login'] . '"');
-        return true;
-    }
-    return false;
-}
 
-function userReg(array $newUserInfo): bool { // New user registration
-    $mysql = new mysqli('localhost', 'root', 12344321, 'db');
-    $result = mysqli_query($mysql, 'SELECT `login`, `email` FROM `users` WHERE
-    `login` = "' . $newUserInfo['login'] . '" OR
-    `email` = "' . $newUserInfo['email'] . '"');
-    if (mysqli_num_rows($result) !== 0) {
-        $mysql->close();
-        return false;
-    }
-    mysqli_query($mysql, 'INSERT INTO `users` (`login`, `password`, `email`)
-    VALUES("' . $newUserInfo['login'] . '",
-            "' . $newUserInfo['password'] . '",
-            "' . $newUserInfo['email'] . '")');
-    $mysql->close();
-    return true;
-}
-
-function inputDataFormat() { // Standartdizing data from post
+function inputDataFormat() {
     $userInfo = [
         "login" => htmlspecialchars(trim($_POST['login'])),
         "password" => md5(htmlspecialchars(trim($_POST['password'])) . SALT)
@@ -47,20 +14,18 @@ function inputDataFormat() { // Standartdizing data from post
     return $userInfo;
 }
 
-
-function validateData() {
-    if (mb_strlen($_POST['login']) < 6 || mb_strlen($_POST['login']) > 30) {
-        $_SESSION['message'] = "Login must be between 6 and 30 characters";
-        header("Location: /reg");
-        exit;
-    } elseif (mb_strlen($_POST['password']) < 8) {
-        $_SESSION['message'] = "Password must be at least 8 characters";
-        header("Location: /reg");
-        exit;
-    } elseif (mb_strlen($_POST['email']) < 4) {
-        $_SESSION['message'] = "Email must be at least 4 characters";
-        header("Location: /reg");
-        exit;
+function autoLogin() {
+    if (isset($_COOKIE['userKey']) && empty($_SESSION['login'])) {
+        $id = explode("_", $_COOKIE['userKey']);
+        $mysql = new mysqli('localhost', 'root', 12344321, 'db');
+        $result = mysqli_query($mysql, 'SELECT * FROM `users` WHERE `id` = "' . $id[0] . '"');
+        $resultArray = mysqli_fetch_assoc($result);
+        $mysql->close();
+        if ($_COOKIE['userKey'] === $resultArray['id'] . '_' . md5($resultArray['login'] . SALT)) {
+            $_SESSION["login"] = $resultArray["login"];
+            $_SESSION["user_id"] = $resultArray['id'];
+            $_SESSION["role_id"] = $resultArray['role_id'];
+        }
     }
 }
 
@@ -94,29 +59,46 @@ function getImage(string $size = 'small'): string {
         'small' => 60
     ];
     if (array_key_exists($size, $sizes)) {
-        $defaultPath = 'uploads/' . 'user' . $_SESSION['userid'];
+        $defaultPath = 'uploads/' . 'user' . $_SESSION['user_id'];
         if (!file_exists($defaultPath . 'source.jpg')) {
             return 'uploads/defaultimg' . $size . ".jpg";
         } elseif (file_exists($defaultPath . $size . '.jpg')) {
             return $defaultPath . $size . '.jpg';
+        } else {
+            $path = basePath($defaultPath . 'source.jpg');
+            $imagick = new Imagick($path);
+            $imagick->cropThumbnailImage($sizes[$size], $sizes[$size], Imagick::FILTER_LANCZOS);
+            $imagick->writeImage(basePath($defaultPath . $size . '.jpg'));
+            $imagick->clear();
+            return $defaultPath . $size . '.jpg';
         }
-        $path = $_SERVER['DOCUMENT_ROOT'] . "/" . $defaultPath . 'source.jpg';
-        $imagick = new Imagick($path);
-        $imagick->cropThumbnailImage($sizes[$size], $sizes[$size], Imagick::FILTER_LANCZOS);
-        $imagick->writeImage($_SERVER['DOCUMENT_ROOT'] . "/" . $defaultPath . $size . '.jpg');
-        $imagick->clear();
-        return $defaultPath . $size . '.jpg';
     }
-    return '#';
 }
 
-function disposeData($value){
+function disposeData($value) {
     echo "<pre>";
     var_dump($value);
     echo "</pre>";
     die();
 }
-define('BASE_PATH',__DIR__);
-function basePath($path){
+
+define('BASE_PATH', __DIR__);
+
+function basePath($path) {
     return BASE_PATH . '/' . $path;
+}
+
+function isSessionActive($status = 'notLogged'){
+    if (!isset($_SESSION['user_id']) && $status == 'notLogged') {
+        header("Location: /");
+        exit;
+    }
+    elseif (isset($_SESSION['user_id']) && $status == 'logged') {
+        header("Location: /");
+        exit;
+    }
+    elseif ((!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 1) && $status == 'onlyAdmin') {
+        header("Location: /");
+        exit;
+    }
 }

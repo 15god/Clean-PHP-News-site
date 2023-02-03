@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 $siteTitle = "Альбом";
 if (!empty($_POST) && $_POST['delete_var'] == 'deletePhoto') {
@@ -11,7 +12,7 @@ class Album {
     private $albumpath;
 
     public function __construct() {
-        $this->albumpath = 'uploads/album' . $_SESSION['userid'];
+        $this->albumpath = 'uploads/album' . $_SESSION['user_id'];
         if (!file_exists(__DIR__ . '/../' . $this->albumpath)) {
             mkdir($this->albumpath, 0777, true);
         }
@@ -65,7 +66,7 @@ class Album {
     }
 
 }
-require 'isSessionActive.php';
+isSessionActive();
 $userAlbum = new Album();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $userAlbum->addPhoto();

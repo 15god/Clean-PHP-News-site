@@ -1,11 +1,12 @@
 <?php
+
 session_start();
 $siteTitle = "Профиль";
-require "isSessionActive.php";
+isSessionActive();
 if (!empty($_FILES['profile_pic']) && $_FILES['profile_pic']['error'] === 0) {
     $path = 'uploads/' . $_FILES['profile_pic']['name'];
     move_uploaded_file($_FILES['profile_pic']['tmp_name'], $path);
-    $imagick = new Imagick($_SERVER['DOCUMENT_ROOT'] . '/' . $path);
+    $imagick = new Imagick(basePath($path));
     if ($imagick->getImageFormat() !== 'jpg' || $imagick->getImageFormat() !== 'jpeg') {
         $imagick->setImageFormat('jpg');
         $imagick->writeImage();
