@@ -49,19 +49,18 @@ DROP TABLE IF EXISTS `news`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `news` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `category_id` int DEFAULT NULL,
-  `author` varchar(20) DEFAULT NULL,
+  `category_id` int NOT NULL,
+  `author_id` int NOT NULL,
   `is_final_ver` tinyint NOT NULL DEFAULT '0',
-  `title` varchar(200) DEFAULT NULL,
+  `title` varchar(50) NOT NULL,
   `content` longtext,
   `img` varchar(200) DEFAULT NULL,
-  `publication_date` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  `publication_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   KEY `category_link_idx` (`category_id`),
-  KEY `author_link_idx` (`author`),
-  CONSTRAINT `author_link` FOREIGN KEY (`author`) REFERENCES `users` (`login`) ON DELETE SET NULL ON UPDATE RESTRICT,
+  KEY `author_link_idx` (`id`),
+  CONSTRAINT `author_link` FOREIGN KEY (`id`) REFERENCES `users` (`id`),
   CONSTRAINT `category_link` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -70,6 +69,7 @@ CREATE TABLE `news` (
 
 LOCK TABLES `news` WRITE;
 /*!40000 ALTER TABLE `news` DISABLE KEYS */;
+INSERT INTO `news` VALUES (2,3,3,1,'Garage on sale','call 88383828319238 $5000 cash only','NULL','2001-05-22 02:00:00'),(3,3,3,1,'Garage on sale','call 88383828319238 $5000 cash only','NULL','2001-05-22 02:00:00');
 /*!40000 ALTER TABLE `news` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -180,7 +180,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,1,'123','399fc5dfc5ea713cfe4512ae9afec40c','123@123','2022-11-27 12:24:56','2022-12-02 21:45:36'),(2,1,'55','d731999849497c0d144432a66a66611d','55@55','2022-11-27 12:46:44','2022-12-02 21:40:27'),(3,1,'aboba4','1781281ad9cd32e5a2721ebf228ab88d','aboba4@mail.ru','2022-11-30 01:21:11','2022-11-29 22:21:20');
+INSERT INTO `users` VALUES (1,1,'123','399fc5dfc5ea713cfe4512ae9afec40c','123@123','2022-11-27 12:24:56','2023-01-30 12:32:03'),(2,3,'55','d731999849497c0d144432a66a66611d','55@55','2022-11-27 12:46:44','2023-02-02 06:42:00'),(3,1,'aboba4','1781281ad9cd32e5a2721ebf228ab88d','aboba4@mail.ru','2022-11-30 01:21:11','2022-11-29 22:21:20');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -193,4 +193,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-12-03  0:52:00
+-- Dump completed on 2023-02-03 17:30:58
