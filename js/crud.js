@@ -24,14 +24,14 @@ $(document).on('click', '.update', function (e) {
     var title = $(this).attr("data-title");
     var content = $(this).attr("data-content");
     var img = $(this).attr("data-img");
-    var is_final_ver = $(this).attr("data-final");
+    var is_final_ver = ($(this).attr("data-final") === '1' ? true : false);
     $('#id_u').val(id);
-    $('#category').val(category);
-    $('#author').val(author);
-    $('#title').val(title);
-    $('#content').val(content);
-    $('#img').val(img);
-    $('#is_final_ver').val(is_final_ver);
+    $('#category_u').val(category);
+    $('#author_u').val(author);
+    $('#title_u').val(title);
+    $('#content_u').val(content);
+    $('#img_u').val(img);
+    $('#is_final_ver_u').prop('checked', is_final_ver);
 });
 
 $(document).on('click', '#update', function (e) {

@@ -3,6 +3,7 @@
 class Database {
     
     private $connection;
+    public $queryStatus = FALSE;
     
     public function __construct($config, $username = 'root', $password = 12344321) {
         $dsn = 'mysql:' . http_build_query($config, '', ';');
@@ -13,7 +14,7 @@ class Database {
     
     public function query($query,$params = []) {
         $stmt = $this->connection->prepare($query);
-        $stmt->execute($params);
+        $this->queryStatus = $stmt->execute($params);
         return $stmt;
     }
 }

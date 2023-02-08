@@ -8,8 +8,9 @@ class NewsController{
         $is_final_ver = (isset($_POST['is_final_ver'])) ? 1 : 0;
         $author_id = intval($_POST['author_id']);
         $category_id = intval($_POST['category_id']);
-        $db->query("INSERT INTO news (category_id, author_id, is_final_ver, title, content, img)
-        VALUES(:category_id, :author_id, :is_final_ver, :title, :content, :img)", [
+        $sql = "INSERT INTO news (category_id, author_id, is_final_ver, title, content, img)
+        VALUES(:category_id, :author_id, :is_final_ver, :title, :content, :img)";
+        $db->query($sql, [
             ':category_id' => $category_id,
             ':author_id' => $author_id,
             ':is_final_ver' => $is_final_ver,
@@ -17,23 +18,37 @@ class NewsController{
             ':content' => $_POST['content'],
             ':img' => $_POST['img']
         ]);
-
+        if ($db->queryStatus) {
+            echo json_encode(array("statusCode"=>200));
+        }
+        else {
+            echo "Error: " . $sql . "<br>";
+        }
     }
     
     public function update() {
         $config = require "dbconfig.php";
         $db = new Database($config);
-        $category = $_POST['category_id'] == 'on'? TRUE : FALSE;
-        $db->query("UPDATE news SET category_id = :category_id, author_id = :author_id,
-        is_final_ver = :is_final_ver, title = :title, content = :content, img = :img WHERE id = :id", [
+        $is_final_ver = ($_POST['is_final_ver'] == 'on') ? 1 : 0;
+        $author_id = intval($_POST['author_id']);
+        $category_id = intval($_POST['category_id']);
+        $sql = "UPDATE news SET category_id = :category_id, author_id = :author_id,
+        is_final_ver = :is_final_ver, title = :title, content = :content, img = :img WHERE id = :id";
+        $db->query($sql, [
             ':id' => $_POST['id'],
-            ':category_id' => $category,
-            ':author_id' => $_POST['author_id'],
-            ':is_final_ver' => $_POST['is_final_ver'],
+            ':category_id' => $category_id,
+            ':author_id' => $author_id,
+            ':is_final_ver' => $is_final_ver,
             ':title' => $_POST['title'],
             ':content' => $_POST['content'],
             ':img' => $_POST['img']
         ]);
+        if ($db->queryStatus) {
+            echo json_encode(array("statusCode"=>200));
+        }
+        else {
+            echo "Error: " . $sql . "<br>";
+        }
     }
     
     public function delete() {
