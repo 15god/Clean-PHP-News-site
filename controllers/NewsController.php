@@ -69,7 +69,7 @@ class NewsController{
         $siteTitle = "Home";
         $config = require "dbconfig.php";
         $db = new Database($config);
-        $posts = $db->query("SELECT * FROM news")->fetchAll();
+        $posts = $db->query("SELECT * FROM news WHERE is_final_ver = 1")->fetchAll();
         require "views/index.view.php";
     }
 }
