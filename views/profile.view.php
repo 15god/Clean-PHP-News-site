@@ -6,7 +6,7 @@
         <div class="col">
             <form action="/profile" method="post" enctype="multipart/form-data">
                 <div class="form-group" style="width:300px">
-                    <img src="<?=getImage('big')?>" alt="profile-pic" class="round-avatar">
+                    <img src="<?=getImage('profile','big')?>" alt="profile-pic" class="round-avatar">
                     <label for = "profile_pic">Profile picture</label>
                     <input type="file" name="profile_pic" id="profile_pic">
                     <button type="submit" class="btn btn-primary btn-lg btn-block mt-2">Применить</button>

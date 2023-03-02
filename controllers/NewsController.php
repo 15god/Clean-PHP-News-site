@@ -6,13 +6,14 @@ class NewsController{
         $config = require "dbconfig.php";
         $db = new Database($config);
         $is_final_ver = (isset($_POST['is_final_ver'])) ? 1 : 0;
-        $author_id = intval($_POST['author_id']);
-        $category_id = intval($_POST['category_id']);
-        $sql = "INSERT INTO news (category_id, author_id, is_final_ver, title, content, img)
-        VALUES(:category_id, :author_id, :is_final_ver, :title, :content, :img)";
+        $sql = "INSERT INTO news
+        (category_id, author_id, is_final_ver, title, content, img)
+        VALUES((SELECT id from categories WHERE categories.category = :category),
+        (SELECT id from users WHERE users.login = :author),
+        :is_final_ver, :title, :content, :img)";
         $db->query($sql, [
-            ':category_id' => $category_id,
-            ':author_id' => $author_id,
+            ':category' => $_POST['category'],
+            ':author' => $_POST['author'],
             ':is_final_ver' => $is_final_ver,
             ':title' => $_POST['title'],
             ':content' => $_POST['content'],
@@ -30,14 +31,18 @@ class NewsController{
         $config = require "dbconfig.php";
         $db = new Database($config);
         $is_final_ver = ($_POST['is_final_ver'] == 'on') ? 1 : 0;
-        $author_id = intval($_POST['author_id']);
-        $category_id = intval($_POST['category_id']);
-        $sql = "UPDATE news SET category_id = :category_id, author_id = :author_id,
-        is_final_ver = :is_final_ver, title = :title, content = :content, img = :img WHERE id = :id";
+        $sql = "UPDATE news
+        SET category_id = (SELECT id from categories WHERE categories.category = :category),
+            author_id = (SELECT id from users WHERE users.login = :author),
+            is_final_ver = :is_final_ver,
+            title = :title,
+            content = :content,
+            img = :img
+        WHERE news.id = :id";
         $db->query($sql, [
             ':id' => $_POST['id'],
-            ':category_id' => $category_id,
-            ':author_id' => $author_id,
+            ':category' => $_POST['category'],
+            ':author' => $_POST['author'],
             ':is_final_ver' => $is_final_ver,
             ':title' => $_POST['title'],
             ':content' => $_POST['content'],
@@ -60,7 +65,8 @@ class NewsController{
         session_start();
         $config = require "dbconfig.php";
         $db = new Database($config);
-        $post = $db->query("SELECT * FROM news WHERE id =:id", [':id' => $_GET['id']])->fetch();
+        $post = $db->query("SELECT news.*, users.login FROM news"
+        . " INNER JOIN users ON author_id = users.id WHERE news.id =:id", [':id' => $_GET['id']])->fetch();
         $siteTitle = $post['title'];
         require "views/news.view.php";
     }
@@ -69,7 +75,8 @@ class NewsController{
         $siteTitle = "Home";
         $config = require "dbconfig.php";
         $db = new Database($config);
-        $posts = $db->query("SELECT * FROM news WHERE is_final_ver = 1")->fetchAll();
+        $posts = $db->query("SELECT news.*, users.login FROM news"
+        . " INNER JOIN users ON author_id = users.id WHERE is_final_ver = 1")->fetchAll();
         require "views/index.view.php";
     }
 }

@@ -51,14 +51,14 @@ function flashMsg() {
     }
 }
 
-function getImage(string $size = 'small'): string {
-
+function getImage($type, string $size = 'small'): string {
+// CRUD, profile, news
     $sizes = [
         'big' => 300,
         'medium' => 150,
         'small' => 60
     ];
-    if (array_key_exists($size, $sizes)) {
+    if (array_key_exists($size, $sizes) && $type == 'profile') {
         $defaultPath = 'uploads/' . 'user' . $_SESSION['user_id'];
         if (!file_exists($defaultPath . 'source.jpg')) {
             return 'uploads/defaultimg' . $size . ".jpg";
@@ -72,6 +72,14 @@ function getImage(string $size = 'small'): string {
             $imagick->clear();
             return $defaultPath . $size . '.jpg';
         }
+    }
+    elseif ($type == 'CRUD') {
+        $path = $post;
+        $imagick = new Imagick($path);
+        $imagick->cropThumbnailImage($sizes[$size], $sizes[$size], Imagick::FILTER_LANCZOS);
+        $imagick->writeImage(basePath($defaultPath . $size . '.jpg'));
+        $imagick->clear();
+        return $defaultPath . $size . '.jpg';
     }
 }
 

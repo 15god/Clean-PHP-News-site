@@ -4,13 +4,46 @@ require "partials/nav.php";
 ?>
 
 <div class="container">
-    <button type="button" class="btn btn-success btn-lg" style="margin-bottom:10px" data-bs-toggle="modal" data-bs-target="#createModal">Add a new post</button>
-    <?php
-    $page = $_GET['page'];
-    $count = 5;
-    foreach($posts as $post){
-        require 'partials/crudPost.php';
-    } ?>
+    <div class="row">
+        <div class="col-md-8 blog-main">
+            <button type="button" class="btn btn-success btn-lg" style="margin-bottom:10px" data-bs-toggle="modal" data-bs-target="#createModal">Add a new post</button>
+            <?php
+            $page = $_GET['page'] ?? 0;
+            $count = 10;
+            $page_count = ceil(count($posts) / $count);
+            for ($i = $page * $count; $i < ($page + 1) * $count; $i++) {
+                if (isset($posts[$i])) {
+                    $post = $posts[$i];
+                    require 'partials/crudPost.php';
+                }
+            }
+            ?>
+            <div class="page_list" align="center">
+            <?php for ($i = 0; $i < $page_count; $i++): ?>
+                <a href="/crud?page=<?= $i ?>"><button class="page_button"><?= $i + 1 ?></button></a>
+            <?php endfor; ?>
+        </div>
+        </div>
+        <aside class="col-md-4 blog-sidebar">
+            <div class="p-3">
+                <h4 class="font-italic">Сортировка</h4>
+                <ol class="list-unstyled mb-0">
+                    <li><a href="/crud?sort=id">ID</a></li>
+                    <li><a href="/crud?sort=title">Заголовку</a></li>
+                    <li><a href="/crud?sort=publication_date">Дате</a></li>
+                </ol>
+            </div>
+
+            <div class="p-3">
+                <h4 class="font-italic">Фильтр</h4>
+                <ol class="list-unstyled">
+                    <li><a href="#">Дата</a></li>
+                    <li><a href="#">Ключевое слово</a></li>
+                    <li><a href="#">**Здесь будет поле для выбора слова и календарь</a></li>
+                </ol>
+            </div>
+        </aside><!-- /.blog-sidebar -->
+    </div>
 </div>
 
 <!-- Delete Modal -->
@@ -50,11 +83,11 @@ require "partials/nav.php";
                     </div>
                     <div class="form-group">
                         <label>Author</label>
-                        <input type="text" id="author_id" name="author_id" class="form-control" required>
+                        <input type="text" id="author_id" name="author" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label>Category</label>
-                        <input type="text" id="category_id" name="category_id" class="form-control" required>
+                        <input type="text" id="category_id" name="category" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label>Content</label>
@@ -62,6 +95,7 @@ require "partials/nav.php";
                     </div>         
                     <div class="form-group">
                         <label>Image Link</label>
+                        <!--<img src ="!?=getImage('profile', 'medium')?>" alt="CRUD_pic">-->
                         <input type="url" id="img" name="img" class="form-control">
                     </div>
                     <div class="form-group">
@@ -93,11 +127,11 @@ require "partials/nav.php";
                     </div>
                     <div class="form-group">
                         <label>Author</label>
-                        <input type="text" id="author_u" name="author_id" class="form-control" required>
+                        <input type="text" id="author_u" name="author" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label>Category</label>
-                        <input type="text" id="category_u" name="category_id" class="form-control" required>
+                        <input type="text" id="category_u" name="category" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label>Content</label>
@@ -105,6 +139,7 @@ require "partials/nav.php";
                     </div>         
                     <div class="form-group">
                         <label>Image Link</label>
+                        <!--<img src ="!?=getImage('profile', 'medium')?>" alt="CRUD_pic">-->
                         <input type="url" id="img_u" name="img" class="form-control">
                     </div>
                     <div class="form-group">

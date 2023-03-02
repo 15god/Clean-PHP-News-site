@@ -7,7 +7,7 @@
         <?php endif;
         if(isset($_SESSION['login'])): ?>
             <a class="p-2 text-dark" href="/profile">Добро пожаловать,  <?=$_SESSION['login']?></a>
-            <img src ="<?=getImage('small')?>" alt="profile-pic" class="mr-3 round-avatar">
+            <img src ="<?=getImage('profile')?>" alt="profile-pic" class="mr-3 round-avatar">
         <?php endif;?>
         <a class="p-2 text-dark" href="/">Главная</a>
         <a class="p-2 text-dark" href="/album">Альбом</a>
