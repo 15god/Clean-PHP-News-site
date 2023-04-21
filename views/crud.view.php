@@ -7,41 +7,26 @@ require "partials/nav.php";
     <div class="row">
         <div class="col-md-8 blog-main">
             <button type="button" class="btn btn-success btn-lg" style="margin-bottom:10px" data-bs-toggle="modal" data-bs-target="#createModal">Add a new post</button>
+            <div class="postList">
             <?php
-            $page = $_GET['page'] ?? 0;
-            $count = 10;
-            $page_count = ceil(count($posts) / $count);
-            for ($i = $page * $count; $i < ($page + 1) * $count; $i++) {
+            $page_count = ceil($totalRows / $count);
+            for ($i = 0; $i <= $count; $i++) {
                 if (isset($posts[$i])) {
                     $post = $posts[$i];
                     require 'partials/crudPost.php';
                 }
             }
             ?>
+            </div>
             <div class="page_list" align="center">
-            <?php for ($i = 0; $i < $page_count; $i++): ?>
-                <a href="/crud?page=<?= $i ?>"><button class="page_button"><?= $i + 1 ?></button></a>
-            <?php endfor; ?>
-        </div>
+                <?php for ($i = 0; $i < $page_count; $i++): ?>
+                    <a href="/crud?sort=<?= $sort ?>&order=<?= $order ?>&page=<?= $i ?>&start-date=<?= $date1 ?>&end-date=<?= $date2 ?>&keywords=<?= $keywords?>">
+                        <button class="btn btn-outline-dark mt-2"><?= $i + 1 ?></button></a>
+                <?php endfor; ?>
+            </div>
         </div>
         <aside class="col-md-4 blog-sidebar">
-            <div class="p-3">
-                <h4 class="font-italic">Сортировка</h4>
-                <ol class="list-unstyled mb-0">
-                    <li><a href="/crud?sort=id">ID</a></li>
-                    <li><a href="/crud?sort=title">Заголовку</a></li>
-                    <li><a href="/crud?sort=publication_date">Дате</a></li>
-                </ol>
-            </div>
-
-            <div class="p-3">
-                <h4 class="font-italic">Фильтр</h4>
-                <ol class="list-unstyled">
-                    <li><a href="#">Дата</a></li>
-                    <li><a href="#">Ключевое слово</a></li>
-                    <li><a href="#">**Здесь будет поле для выбора слова и календарь</a></li>
-                </ol>
-            </div>
+            <?php require 'partials/filter.php' ?>
         </aside><!-- /.blog-sidebar -->
     </div>
 </div>
@@ -87,7 +72,12 @@ require "partials/nav.php";
                     </div>
                     <div class="form-group">
                         <label>Category</label>
-                        <input type="text" id="category_id" name="category" class="form-control" required>
+                        <select class="form-control" id="category_id" name ="category" required>
+                            <option selected></option>
+                            <?php for ($i = 0; $i < count($categories); $i++) :?>
+                            <option value="<?=$i + 1?>"><?= $categories[$i]['category']?></option>
+                            <?php endfor?>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Content</label>
@@ -129,9 +119,14 @@ require "partials/nav.php";
                         <label>Author</label>
                         <input type="text" id="author_u" name="author" class="form-control" required>
                     </div>
-                    <div class="form-group">
+                    <div class='form-group'>
                         <label>Category</label>
-                        <input type="text" id="category_u" name="category" class="form-control" required>
+                        <select class="form-control" id="category_u" name ="category" required>
+                            <option selected></option>
+                            <?php for ($i = 0; $i < count($categories); $i++) :?>
+                            <option value="<?=$i + 1?>"><?= $categories[$i]['category']?></option>
+                            <?php endfor?>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Content</label>
@@ -139,7 +134,9 @@ require "partials/nav.php";
                     </div>         
                     <div class="form-group">
                         <label>Image Link</label>
-                        <!--<img src ="!?=getImage('profile', 'medium')?>" alt="CRUD_pic">-->
+                        <div>
+                            <img src ="" alt="CRUD_pic" id="img_crop" width="100" height="100" class="mb-1">
+                        </div>
                         <input type="url" id="img_u" name="img" class="form-control">
                     </div>
                     <div class="form-group">

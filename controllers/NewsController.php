@@ -8,7 +8,7 @@ class NewsController{
         $is_final_ver = (isset($_POST['is_final_ver'])) ? 1 : 0;
         $sql = "INSERT INTO news
         (category_id, author_id, is_final_ver, title, content, img)
-        VALUES((SELECT id from categories WHERE categories.category = :category),
+        VALUES(:category,
         (SELECT id from users WHERE users.login = :author),
         :is_final_ver, :title, :content, :img)";
         $db->query($sql, [
@@ -30,9 +30,9 @@ class NewsController{
     public function update() {
         $config = require "dbconfig.php";
         $db = new Database($config);
-        $is_final_ver = ($_POST['is_final_ver'] == 'on') ? 1 : 0;
+        $is_final_ver = (isset($_POST['is_final_ver'])) ? 1 : 0;
         $sql = "UPDATE news
-        SET category_id = (SELECT id from categories WHERE categories.category = :category),
+        SET category_id = :category,
             author_id = (SELECT id from users WHERE users.login = :author),
             is_final_ver = :is_final_ver,
             title = :title,

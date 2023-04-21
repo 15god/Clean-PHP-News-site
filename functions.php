@@ -1,5 +1,4 @@
 <?php
-
 define("SALT", "dflsk;flsdk125");
 
 function inputDataFormat() {
@@ -72,8 +71,7 @@ function getImage($type, string $size = 'small'): string {
             $imagick->clear();
             return $defaultPath . $size . '.jpg';
         }
-    }
-    elseif ($type == 'CRUD') {
+    } elseif ($type == 'CRUD') {
         $path = $post;
         $imagick = new Imagick($path);
         $imagick->cropThumbnailImage($sizes[$size], $sizes[$size], Imagick::FILTER_LANCZOS);
@@ -83,6 +81,16 @@ function getImage($type, string $size = 'small'): string {
     }
 }
 
+/**function cropCRUDPhoto($url) {
+
+    $imageBlob = file_get_contents($url);
+    $imagick = new Imagick();
+    $imagick->readImageBlob($imageBlob);
+    $imagick->cropThumbnailImage(150, 150);
+    echo $imagick->getImageBlob();
+    destroy($imagick);
+}
+*/
 function disposeData($value) {
     echo "<pre>";
     var_dump($value);
@@ -96,16 +104,14 @@ function basePath($path) {
     return BASE_PATH . '/' . $path;
 }
 
-function isSessionActive($status = 'notLogged'){
+function isSessionActive($status = 'notLogged') {
     if (!isset($_SESSION['user_id']) && $status == 'notLogged') {
         header("Location: /");
         exit;
-    }
-    elseif (isset($_SESSION['user_id']) && $status == 'logged') {
+    } elseif (isset($_SESSION['user_id']) && $status == 'logged') {
         header("Location: /");
         exit;
-    }
-    elseif ((!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 1) && $status == 'onlyAdmin') {
+    } elseif ((!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 1) && $status == 'onlyAdmin') {
         header("Location: /");
         exit;
     }

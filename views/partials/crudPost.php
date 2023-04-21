@@ -6,7 +6,7 @@
     <button type="button" class="btn btn-warning edit" style="float: right; margin-right: 5px;" data-bs-toggle="modal" data-bs-target="#updateModal">
         <i class="material-icons update" data-toggle="tooltip"
            data-id="<?= $post["id"]; ?>"
-           data-category="<?= $post["category"]; ?>"
+           data-category="<?= $post["category_id"]; ?>"
            data-author="<?= $post["login"]; ?>"
            data-title="<?= $post["title"]; ?>"
            data-content="<?= $post["content"]; ?>"
