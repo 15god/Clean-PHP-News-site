@@ -81,17 +81,7 @@ function getImage($type, string $size = 'small'): string {
     }
 }
 
-/**function cropCRUDPhoto($url) {
-
-    $imageBlob = file_get_contents($url);
-    $imagick = new Imagick();
-    $imagick->readImageBlob($imageBlob);
-    $imagick->cropThumbnailImage(150, 150);
-    echo $imagick->getImageBlob();
-    destroy($imagick);
-}
-*/
-function disposeData($value) {
+function dd($value) {
     echo "<pre>";
     var_dump($value);
     echo "</pre>";

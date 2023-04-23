@@ -35,6 +35,7 @@ function userReg(array $newUserInfo) {
 
 session_start();
 $siteTitle = "Регистрация";
+isSessionActive('logged');
 if (!empty($_POST)) {
     validateData();
     $newUserInfo = inputDataFormat();

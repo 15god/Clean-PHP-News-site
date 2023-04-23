@@ -20,3 +20,5 @@ $this->post('/crud-delete', NewsController::class, 'delete');
 $this->post('/crud-create', NewsController::class, 'create');
 $this->post('/crud-update', NewsController::class, 'update');
 
+$this->get('/redact-wyswig', 'controllers/redact.php');
+
