@@ -3,14 +3,14 @@
 class Router {
 
     protected $routes = [];
-    public $uri;
-    public $method;
+    private $uri;
+    private $method;
     
     public function __construct() {
         
-        require "routes.php";
+        require base_path("routes.php");
         $this->uri = parse_url($_SERVER['REQUEST_URI'])['path'];
-        $this->method =$_SERVER['REQUEST_METHOD'];
+        $this->method = $_POST['_method'] ?? $_SERVER['REQUEST_METHOD'];
         
     }
 
@@ -33,18 +33,32 @@ class Router {
 
         $this->add($uri, $controller, "POST", $action);
     }
+    
+    public function delete($uri, $controller, $action = '') {
+
+        $this->add($uri, $controller, "DELETE", $action);
+    }
+    
+    public function put($uri, $controller, $action = '') {
+
+        $this->add($uri, $controller, "PUT", $action);
+    }
+    public function patch($uri, $controller, $action = '') {
+
+        $this->add($uri, $controller, "PATCH", $action);
+    }
 
     public function route() {
 
         foreach ($this->routes as $route) {
-            if ($route['uri'] === $this->uri && $route['method'] === $this->method) {
+            if ($route['uri'] === $this->uri && $route['method'] === strtoupper($this->method)) {
                 if (empty($route['action'])){
-                    return require $route['controller'];
+                    return require base_path('controllers/' . $route['controller']);
                 }
                 else {
                     $ClassName = $route['controller'];
                     $action = $route['action'];
-                    require 'controllers/' . $ClassName . '.php';
+                    require base_path('controllers/' . $ClassName . '.php');
                     (new $ClassName)->$action();
                 }
             }

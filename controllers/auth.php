@@ -1,5 +1,9 @@
 <?php
 
+use Core\App;
+use Core\Database;
+
+// пересоздать куки сессии
 function checkAuth(array $userInfo) {
     $mysql = new mysqli('localhost', 'root', 12344321, 'db');
     $result = mysqli_query($mysql, 'SELECT * FROM `users` WHERE
@@ -18,15 +22,12 @@ function checkAuth(array $userInfo) {
     return false;
 }
 
-session_start();
 isSessionActive('logged');
-$siteTitle = "Вход";
 if (!empty($_POST)) {
     $userInfo = inputDataFormat();
     if (checkAuth($userInfo)) {
         if (isset($_POST['cookieCheckBox'])) {
-            $config = require "dbconfig.php";
-            $db = new Database($config);
+            $db = App::resolve(Database::class);
             $result = $db->query('SELECT id FROM users WHERE login = "' . $userInfo['login'] . '"')->fetch();
             setcookie('userKey', $result['id'] . '_' . md5($userInfo['login'] . SALT), time() + 3600, '/');
         }
@@ -38,4 +39,6 @@ if (!empty($_POST)) {
         exit;
     }
 }
-require "views/auth.view.php";
+view("auth.view.php", [
+    "siteTitle" => "Вход",
+]);

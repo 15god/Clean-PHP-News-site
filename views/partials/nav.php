@@ -13,7 +13,7 @@
         <a class="p-2 text-dark" href="/album">Альбом</a>
     </nav>
     <?php if (!empty($_SESSION['login'])): ?>
-        <a class="btn btn-outline-primary" href="controllers/logout.php">Выйти</a>
+        <a class="btn btn-outline-primary" href="/logout">Выйти</a>
     <?php else: ?>
         <a class="btn btn-outline-primary" href="/auth">Войти</a>
     <?php endif; ?>

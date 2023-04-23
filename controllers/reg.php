@@ -33,8 +33,6 @@ function userReg(array $newUserInfo) {
     return true;
 }
 
-session_start();
-$siteTitle = "Регистрация";
 isSessionActive('logged');
 if (!empty($_POST)) {
     validateData();
@@ -49,4 +47,6 @@ if (!empty($_POST)) {
         exit;
     }
 }
-require "views/reg.view.php";
+view("reg.view.php", [
+    "siteTitle" => "Регистрация",
+]);

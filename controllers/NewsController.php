@@ -1,10 +1,12 @@
 <?php
 
-class NewsController{
-    
+use Core\Database;
+use Core\App;
+
+class NewsController {
+
     public function create() {
-        $config = require "dbconfig.php";
-        $db = new Database($config);
+        $db = App::resolve(Database::class);
         $is_final_ver = (isset($_POST['is_final_ver'])) ? 1 : 0;
         $sql = "INSERT INTO news
         (category_id, author_id, is_final_ver, title, content, img)
@@ -20,16 +22,14 @@ class NewsController{
             ':img' => $_POST['img']
         ]);
         if ($db->queryStatus) {
-            echo json_encode(array("statusCode"=>200));
-        }
-        else {
+            echo json_encode(array("statusCode" => 200));
+        } else {
             echo "Error: " . $sql . "<br>";
         }
     }
-    
+
     public function update() {
-        $config = require "dbconfig.php";
-        $db = new Database($config);
+        $db = App::resolve(Database::class);
         $is_final_ver = (isset($_POST['is_final_ver'])) ? 1 : 0;
         $sql = "UPDATE news
         SET category_id = :category,
@@ -49,37 +49,35 @@ class NewsController{
             ':img' => $_POST['img']
         ]);
         if ($db->queryStatus) {
-            echo json_encode(array("statusCode"=>200));
-        }
-        else {
+            echo json_encode(array("statusCode" => 200));
+        } else {
             echo "Error: " . $sql . "<br>";
         }
     }
-    
+
     public function delete() {
-        $config = require "dbconfig.php";
-        $db = new Database($config);
+        $db = App::resolve(Database::class);
         $db->query("DELETE FROM news WHERE id =:id", [':id' => $_POST['id']]);
     }
+
     public function show() {
-        session_start();
-        $config = require "dbconfig.php";
-        $db = new Database($config);
+        $db = App::resolve(Database::class);
         $post = $db->query("SELECT news.*, users.login FROM news"
-        . " INNER JOIN users ON author_id = users.id WHERE news.id =:id", [':id' => $_GET['id']])->fetch();
-        $siteTitle = $post['title'];
-        require "views/news.view.php";
+                        . " INNER JOIN users ON author_id = users.id WHERE news.id =:id", [':id' => $_GET['id']])->fetch();
+        view("news.view.php", [
+            "post" => $post,
+            "siteTitle" => $post['title'],
+        ]);
     }
+
     public function list() {
-        session_start();
-        $siteTitle = "Home";
-        $config = require "dbconfig.php";
-        $db = new Database($config);
+        $db = App::resolve(Database::class);
         $posts = $db->query("SELECT news.*, users.login FROM news"
-        . " INNER JOIN users ON author_id = users.id WHERE is_final_ver = 1")->fetchAll();
-        require "views/index.view.php";
+                        . " INNER JOIN users ON author_id = users.id WHERE is_final_ver = 1")->fetchAll();
+        view("index.view.php", [
+            "siteTitle" => "Home",
+            "posts" => $posts
+        ]);
     }
+
 }
-
-
-

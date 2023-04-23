@@ -1,4 +1,7 @@
 <?php
+
+session_start();
+
 define("SALT", "dflsk;flsdk125");
 
 function inputDataFormat() {
@@ -64,20 +67,20 @@ function getImage($type, string $size = 'small'): string {
         } elseif (file_exists($defaultPath . $size . '.jpg')) {
             return $defaultPath . $size . '.jpg';
         } else {
-            $path = basePath($defaultPath . 'source.jpg');
+            $path = base_path($defaultPath . 'source.jpg');
             $imagick = new Imagick($path);
             $imagick->cropThumbnailImage($sizes[$size], $sizes[$size], Imagick::FILTER_LANCZOS);
-            $imagick->writeImage(basePath($defaultPath . $size . '.jpg'));
+            $imagick->writeImage(base_path($defaultPath . $size . '.jpg'));
             $imagick->clear();
             return $defaultPath . $size . '.jpg';
         }
-    } elseif ($type == 'CRUD') {
-        $path = $post;
-        $imagick = new Imagick($path);
-        $imagick->cropThumbnailImage($sizes[$size], $sizes[$size], Imagick::FILTER_LANCZOS);
-        $imagick->writeImage(basePath($defaultPath . $size . '.jpg'));
-        $imagick->clear();
-        return $defaultPath . $size . '.jpg';
+//    } elseif ($type == 'CRUD') {
+//        $path = $post;
+//        $imagick = new Imagick($path);
+//        $imagick->cropThumbnailImage($sizes[$size], $sizes[$size], Imagick::FILTER_LANCZOS);
+//        $imagick->writeImage(base_path($defaultPath . $size . '.jpg'));
+//        $imagick->clear();
+//        return $defaultPath . $size . '.jpg';
     }
 }
 
@@ -88,10 +91,8 @@ function dd($value) {
     die();
 }
 
-define('BASE_PATH', __DIR__);
-
-function basePath($path) {
-    return BASE_PATH . '/' . $path;
+function base_path($path) {
+    return BASE_PATH . $path;
 }
 
 function isSessionActive($status = 'notLogged') {
@@ -105,4 +106,10 @@ function isSessionActive($status = 'notLogged') {
         header("Location: /");
         exit;
     }
+}
+
+function view($path, $attributes = []){
+    
+    extract($attributes);
+    require base_Path("views/" . $path);
 }

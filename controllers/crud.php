@@ -1,9 +1,10 @@
 <?php
-session_start();
-$siteTitle = "CRUD";
+
+use Core\App;
+use Core\Database;
+
 isSessionActive('onlyAdmin');
-$config = require "dbconfig.php";
-$db = new Database($config);
+$db = App::resolve(Database::class);
 $sql = "SELECT news.*, users.login, categories.category FROM news"
         . " INNER JOIN users ON author_id = users.id"
         . " INNER JOIN categories ON category_id = categories.id ";
@@ -46,7 +47,19 @@ echo $sql;
 $totalRows = $db->query($sqlRows, [])->fetchColumn();
 $posts = $db->query($sql, [])->fetchAll();
 $categories = $db->query("SELECT category FROM categories", [])->fetchAll();
-require "views/crud.view.php";
+
+view("crud.view.php", [
+    "siteTitle" => "CRUD",
+    "totalRows" => $totalRows,
+    "posts" => $posts,
+    "categories" => $categories,
+    "count" => $count,
+    "sort" => $sort,
+    "order" => $order,
+    "date1" => $date1,
+    "date2" => $date2,
+    "keywords" => $keywords
+])
 ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
