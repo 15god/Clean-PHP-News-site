@@ -9,6 +9,7 @@ require "partials/nav.php";
             <button type="button" class="btn btn-success btn-lg" style="margin-bottom:10px" data-bs-toggle="modal" data-bs-target="#createModal">Add a new post</button>
             <div class="postList">
                 <?php
+                $page = $_GET['page'] ?? 0;
                 $page_count = ceil($totalRows / $count);
                 for ($i = 0; $i <= $count; $i++) {
                     if (isset($posts[$i])) {
@@ -21,7 +22,7 @@ require "partials/nav.php";
             <div class="page_list" align="center">
                 <?php for ($i = 0; $i < $page_count; $i++): ?>
                     <a href="/crud?sort=<?= $sort ?>&order=<?= $order ?>&page=<?= $i ?>&start-date=<?= $date1 ?>&end-date=<?= $date2 ?>&keywords=<?= $keywords ?>">
-                        <button class="btn btn-outline-dark mt-2"><?= $i + 1 ?></button></a>
+                        <button class="btn <?= $i != $page ? 'btn-outline-dark' : 'btn-dark' ?> mt-2"><?= $i + 1 ?></button></a>
                 <?php endfor; ?>
             </div>
         </div>
@@ -133,17 +134,10 @@ require "partials/nav.php";
                         <input type="text" id="content_u" name="content" class="form-control">
                     </div>         
                     <div class="form-group">
-                        <!--                        <label>Image Link</label>
-                                                <div>
-                                                    <img src ="" alt="CRUD_pic" id="img_crop" width="100" height="100" class="mb-1">
-                                                </div>
-                                                <input type="url" id="img_u" name="img" class="form-control">-->
-                    </div>
-                    <div class="form-group">
                         <label>Final?</label>
-                        <input type="checkbox" id="is_final_ver_u" name="is_final_ver" required>
+                        <input type="checkbox" id="is_final_ver_u" name="is_final_ver">
                     </div>
-                    <a href="wyswig-edit?id=" class="btn btn-outline-secondary w-100 mx-0 mb-2" id="redact">Full Edit</a>
+                    <a href="/crudEdit?id=" class="btn btn-outline-secondary w-100 mx-0 mb-2" id="redact">Full Edit</a>
                 </div>
                 <div class="modal-footer flex-column border-top-0">
                     <input type="hidden" id="id_u" name="id" class="form-control">
@@ -153,4 +147,7 @@ require "partials/nav.php";
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="js/crud.js"></script>
 <?php require "partials/footer.php"; ?>

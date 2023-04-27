@@ -9,7 +9,7 @@
            data-category="<?= $post["category_id"]; ?>"
            data-author="<?= $post["login"]; ?>"
            data-title="<?= $post["title"]; ?>"
-           data-content="<?= $post["content"]; ?>"
+           data-content="<?= htmlspecialchars($post["content"]); ?>"
            data-img="<?= $post["img"]; ?>"
            data-final="<?= $post["is_final_ver"] ?>">
             Edit</i>

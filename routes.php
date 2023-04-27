@@ -14,14 +14,14 @@ $this->get('/album', AlbumController::class, 'show')->only('auth');
 $this->put('/album', AlbumController::class, 'store')->only('auth');
 $this->delete('/album', AlbumController::class, 'destroy')->only('auth');
 
-$this->get('/crud', 'crud.php')->only('admin'); // extract crud logic to a different file from newscontroller
-
 $this->get('/', NewsController::class, 'list');
 $this->get('/news', NewsController::class, 'show');
 
-$this->delete('/crud', NewsController::class, 'destroy')->only('admin');
-$this->put('/crud', NewsController::class, 'store')->only('admin');
-$this->patch('/crud', NewsController::class, 'edit')->only('admin');
+$this->get('/crud', CRUDController::class, 'list')->only('admin');
+$this->delete('/crud', CRUDController::class, 'destroy')->only('admin');
+$this->put('/crud', CRUDController::class, 'store')->only('admin');
+$this->patch('/crud', CRUDController::class, 'edit')->only('admin');
 
-$this->get('/redact-wyswig', 'redact.php')->only('admin');
+$this->get('/crudEdit', CRUDController::class, 'show')->only('admin');
+$this->patch('/crudEdit', CRUDController::class, 'editContent')->only('admin');//ajax nado
 
