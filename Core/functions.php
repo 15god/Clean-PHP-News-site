@@ -2,31 +2,39 @@
 
 session_start();
 
+use Core\Database;
+use Core\App;
+
 define("SALT", "dflsk;flsdk125");
 
-function inputDataFormat() {
-    $userInfo = [
-        "login" => htmlspecialchars(trim($_POST['login'])),
-        "password" => md5(htmlspecialchars(trim($_POST['password'])) . SALT)
-    ];
-    if (!empty($_POST['email'])) {
-        $userInfo['email'] = htmlspecialchars(trim($_POST['email']));
-        filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-    }
-    return $userInfo;
+function dd($value) {
+    echo "<pre>";
+    var_dump($value);
+    echo "</pre>";
+    die();
 }
 
-function autoLogin() {
+function base_path($path) {
+    return BASE_PATH . $path;
+}
+
+function view($path, $attributes = []){
+    
+    extract($attributes);
+    require base_Path("views/" . $path);
+}
+
+function autoLogin() {//переписать с $db
     if (isset($_COOKIE['userKey']) && empty($_SESSION['login'])) {
         $id = explode("_", $_COOKIE['userKey']);
-        $mysql = new mysqli('localhost', 'root', 12344321, 'db');
-        $result = mysqli_query($mysql, 'SELECT * FROM `users` WHERE `id` = "' . $id[0] . '"');
-        $resultArray = mysqli_fetch_assoc($result);
-        $mysql->close();
-        if ($_COOKIE['userKey'] === $resultArray['id'] . '_' . md5($resultArray['login'] . SALT)) {
-            $_SESSION["login"] = $resultArray["login"];
-            $_SESSION["user_id"] = $resultArray['id'];
-            $_SESSION["role_id"] = $resultArray['role_id'];
+        $db = App::resolve(Database::class);
+        $result = $db->query("SELECT id, login, role_id FROM users WHERE id = :id", [
+            ":id" => $id[0]
+        ])->fetch();
+        if ($_COOKIE['userKey'] === $result['id'] . '_' . md5($result['login'] . SALT)) {
+            $_SESSION["login"] = $result["login"];
+            $_SESSION["user_id"] = $result['id'];
+            $_SESSION["role_id"] = $result['role_id'];
         }
     }
 }
@@ -54,7 +62,7 @@ function flashMsg() {
 }
 
 function getImage($type, string $size = 'small'): string {
-// CRUD, profile, news
+// profile, news
     $sizes = [
         'big' => 300,
         'medium' => 150,
@@ -67,49 +75,12 @@ function getImage($type, string $size = 'small'): string {
         } elseif (file_exists($defaultPath . $size . '.jpg')) {
             return $defaultPath . $size . '.jpg';
         } else {
-            $path = base_path($defaultPath . 'source.jpg');
+            $path = base_path('public/' . $defaultPath . 'source.jpg');
             $imagick = new Imagick($path);
             $imagick->cropThumbnailImage($sizes[$size], $sizes[$size], Imagick::FILTER_LANCZOS);
-            $imagick->writeImage(base_path($defaultPath . $size . '.jpg'));
+            $imagick->writeImage(base_path('public/' . $defaultPath . $size . '.jpg'));
             $imagick->clear();
             return $defaultPath . $size . '.jpg';
         }
-//    } elseif ($type == 'CRUD') {
-//        $path = $post;
-//        $imagick = new Imagick($path);
-//        $imagick->cropThumbnailImage($sizes[$size], $sizes[$size], Imagick::FILTER_LANCZOS);
-//        $imagick->writeImage(base_path($defaultPath . $size . '.jpg'));
-//        $imagick->clear();
-//        return $defaultPath . $size . '.jpg';
     }
-}
-
-function dd($value) {
-    echo "<pre>";
-    var_dump($value);
-    echo "</pre>";
-    die();
-}
-
-function base_path($path) {
-    return BASE_PATH . $path;
-}
-
-function isSessionActive($status = 'notLogged') {
-    if (!isset($_SESSION['user_id']) && $status == 'notLogged') {
-        header("Location: /");
-        exit;
-    } elseif (isset($_SESSION['user_id']) && $status == 'logged') {
-        header("Location: /");
-        exit;
-    } elseif ((!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 1) && $status == 'onlyAdmin') {
-        header("Location: /");
-        exit;
-    }
-}
-
-function view($path, $attributes = []){
-    
-    extract($attributes);
-    require base_Path("views/" . $path);
 }

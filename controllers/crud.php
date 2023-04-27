@@ -3,7 +3,6 @@
 use Core\App;
 use Core\Database;
 
-isSessionActive('onlyAdmin');
 $db = App::resolve(Database::class);
 $sql = "SELECT news.*, users.login, categories.category FROM news"
         . " INNER JOIN users ON author_id = users.id"

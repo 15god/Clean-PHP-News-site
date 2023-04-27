@@ -9,6 +9,7 @@
                     <img src="<?=getImage('profile','big')?>" alt="profile-pic" class="round-avatar">
                     <label for = "profile_pic">Profile picture</label>
                     <input type="file" name="profile_pic" id="profile_pic">
+                    <input type="hidden" name="_method" value="patch">
                     <button type="submit" class="btn btn-primary btn-lg btn-block mt-2">Применить</button>
                 </div>
             </form>

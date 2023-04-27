@@ -1,5 +1,7 @@
 <?php
 
+use Core\Middleware\Middleware;
+
 class Router {
 
     protected $routes = [];
@@ -10,7 +12,7 @@ class Router {
         
         require base_path("routes.php");
         $this->uri = parse_url($_SERVER['REQUEST_URI'])['path'];
-        $this->method = $_POST['_method'] ?? $_SERVER['REQUEST_METHOD'];
+        $this->method = strtoupper($_POST['_method'] ?? $_SERVER['REQUEST_METHOD']);
         
     }
 
@@ -20,38 +22,51 @@ class Router {
             "uri" => $uri,
             "controller" => $controller,
             "method" => $method,
-            "action" => $action
+            "action" => $action,
+            "middleware" => null
         ];
+        
+        return $this;
     }
 
     public function get($uri, $controller, $action = '') {
 
-        $this->add($uri, $controller, "GET", $action);
+        return $this->add($uri, $controller, "GET", $action);
     }
 
     public function post($uri, $controller, $action = '') {
 
-        $this->add($uri, $controller, "POST", $action);
+        return $this->add($uri, $controller, "POST", $action);
     }
     
     public function delete($uri, $controller, $action = '') {
 
-        $this->add($uri, $controller, "DELETE", $action);
+        return $this->add($uri, $controller, "DELETE", $action);
     }
     
     public function put($uri, $controller, $action = '') {
 
-        $this->add($uri, $controller, "PUT", $action);
+        return $this->add($uri, $controller, "PUT", $action);
     }
     public function patch($uri, $controller, $action = '') {
 
-        $this->add($uri, $controller, "PATCH", $action);
+        return $this->add($uri, $controller, "PATCH", $action);
+    }
+    
+    public function only($key) {
+        
+        $this->routes[array_key_last($this->routes)]['middleware'] = $key;
+        
+        return $this;
     }
 
     public function route() {
 
         foreach ($this->routes as $route) {
             if ($route['uri'] === $this->uri && $route['method'] === strtoupper($this->method)) {
+                    
+                Middleware::resolve($route['middleware']);
+                
                 if (empty($route['action'])){
                     return require base_path('controllers/' . $route['controller']);
                 }

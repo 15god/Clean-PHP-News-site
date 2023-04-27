@@ -1,10 +1,12 @@
-$(document).on('click', '#btn-add', function (e) {// create new post
+// undefined err
+$(document).on('click', '#btn-add', function () {// create new post
     var data = $("#user_form").serialize();
+    var _method = "put";
     $.ajax({
-        data: data,
+        data: data, _method,
         type: "POST",
-        url: "/crud-create",
-        success: function (dataResult) {
+        url: "/crud",
+        success: function () {
             var dataResult = JSON.parse(dataResult);
             if (dataResult.statusCode === 200) {
                 $('#addEmployeeModal').modal('hide');
@@ -17,7 +19,7 @@ $(document).on('click', '#btn-add', function (e) {// create new post
     });
 });
 
-$(document).on('click', '.update', function (e) {// fill in post edit form
+$(document).on('click', '.update', function () {// fill in post edit form
     var id = $(this).attr("data-id");
     var category_id = $(this).attr("data-category");
     var author = $(this).attr("data-author");
@@ -33,15 +35,17 @@ $(document).on('click', '.update', function (e) {// fill in post edit form
     $('#img_u').val(img);
     $('#img_crop').attr('src', img);
     $('#is_final_ver_u').prop('checked', is_final_ver);
+    $("a[href='wyswig-edit?id=']").prop('href', 'wyswig-edit?id=' + id);
 });
 
-$(document).on('click', '#update', function (e) {//edit post
+$(document).on('click', '#update', function () {//edit post
     var data = $("#update_form").serialize();
+    var _method = "patch";
     $.ajax({
-        data: data,
+        data: data, _method,
         type: "POST",
-        url: "/crud-update",
-        success: function (dataResult) {
+        url: "/crud",
+        success: function () {
             var dataResult = JSON.parse(dataResult);
             if (dataResult.statusCode === 200) {
                 $('#editEmployeeModal').modal('hide');
@@ -60,14 +64,16 @@ $(document).on("click", ".delete", function () {// get id for deletion
 
 });
 
-$(document).on("click", "#delete", function () {// delete post
+$(document).on("click", "#delete", function () {
+    var _method = "delete";// delete post
     $.ajax({
-        url: "/crud-delete",
+        url: "/crud",
         type: "POST",
         cache: false,
         data: {
             type: 3,
-            id: $("#id_d").val()
+            id: $("#id_d").val(),
+            _method
         },
         success: function (dataResult) {
             location.reload();

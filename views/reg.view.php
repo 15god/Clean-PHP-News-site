@@ -1,5 +1,5 @@
 <?php require "partials/head.php" ?>
-<?php require "partials/nav.php"; ?>
+<?php require "partials/nav.php";?>
 <div class="container">
     <form action="/reg" method="post">
         <div class="form-group">
@@ -15,6 +15,7 @@
             <label for="password">Password</label>
             <input type="password" class="form-control" name="password" id="password" placeholder="Password">
         </div>
+        <input type="hidden" name="_method" value="put">
         <button type="submit" class="btn btn-primary btn-lg btn-block">Зарегестрироваться</button>
     </form>
     <a class="btn btn-outline-secondary btn-lg btn-block mt-2" href="/">Вернуться на главную</a>

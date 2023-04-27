@@ -13,5 +13,8 @@ spl_autoload_register(function($class){
 require base_path("bootstrap.php");
 require base_path("Core/Router.php");
 
+autoLogin();
+
 $router = new Router();
 $router->route();
+//доделать wyswig, навести порядок с альбомом и крудом

@@ -1,11 +1,11 @@
 $(".ajax").on("click", function () {
     var filename = $(this).attr("data-path");
     var parentDiv = $(this).closest('div.col');
-    var delete_var = 'deletePhoto';
+    var _method = "delete";
     $.ajax({
         url: '/album',
         type: 'POST',
-        data: {'filename': filename, 'delete_var':delete_var},
+        data: filename, _method,
         success: function () {
             alert('deleted');
             parentDiv.remove();

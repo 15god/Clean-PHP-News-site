@@ -1,26 +1,27 @@
 <?php
 
-$this->get('/auth', 'auth.php');
-$this->post('/auth', 'auth.php');
+$this->get('/auth', AuthController::class, 'create')->only('guest');
+$this->post('/auth', AuthController::class, 'store')->only('guest');
+$this->get('/logout', AuthController::class, 'destroy')->only('auth');//change to delete
 
-$this->get('/logout', 'logout.php');
+$this->get('/reg', RegistrationController::class, 'create')->only('guest');
+$this->put('/reg', RegistrationController::class, 'store')->only('guest');
 
-$this->get('/reg', 'reg.php');
-$this->post('/reg', 'reg.php');
+$this->get('/profile', ProfileController::class, 'show')->only('auth');
+$this->patch('/profile', ProfileController::class, 'update')->only('auth');
 
-$this->get('/profile', 'profile.php');
-$this->post('/profile', 'profile.php');
+$this->get('/album', AlbumController::class, 'show')->only('auth');
+$this->put('/album', AlbumController::class, 'store')->only('auth');
+$this->delete('/album', AlbumController::class, 'destroy')->only('auth');
 
-$this->get('/album', 'album.php');
-$this->post('/album', 'album.php');
-
-$this->get('/crud', 'crud.php');
+$this->get('/crud', 'crud.php')->only('admin'); // extract crud logic to a different file from newscontroller
 
 $this->get('/', NewsController::class, 'list');
 $this->get('/news', NewsController::class, 'show');
-$this->post('/crud-delete', NewsController::class, 'delete');
-$this->post('/crud-create', NewsController::class, 'create');
-$this->post('/crud-update', NewsController::class, 'update');
 
-$this->get('/redact-wyswig', 'redact.php');
+$this->delete('/crud', NewsController::class, 'destroy')->only('admin');
+$this->put('/crud', NewsController::class, 'store')->only('admin');
+$this->patch('/crud', NewsController::class, 'edit')->only('admin');
+
+$this->get('/redact-wyswig', 'redact.php')->only('admin');
 

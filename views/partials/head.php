@@ -1,7 +1,3 @@
-<?php
-
-autoLogin();
-?>
 <!DOCTYPE html>
 <html>
     <head>
