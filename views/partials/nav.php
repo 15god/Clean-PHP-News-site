@@ -15,6 +15,6 @@
     <?php if (!empty($_SESSION['login'])): ?>
         <a class="btn btn-outline-primary" href="/logout">Выйти</a>
     <?php else: ?>
-        <a class="btn btn-outline-primary" href="/auth">Войти</a>
+        <a class="btn btn-outline-primary" href="/login">Войти</a>
     <?php endif; ?>
 </div>

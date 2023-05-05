@@ -1,8 +1,8 @@
 <?php
 
-$this->get('/auth', AuthController::class, 'create')->only('guest');
-$this->post('/auth', AuthController::class, 'store')->only('guest');
-$this->get('/logout', AuthController::class, 'destroy')->only('auth');//change to delete
+$this->get('/login', LoginController::class, 'create')->only('guest');
+$this->post('/login', LoginController::class, 'store')->only('guest');
+$this->get('/logout', LoginController::class, 'destroy')->only('auth');//change to delete
 
 $this->get('/reg', RegistrationController::class, 'create')->only('guest');
 $this->put('/reg', RegistrationController::class, 'store')->only('guest');

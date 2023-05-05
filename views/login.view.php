@@ -1,11 +1,12 @@
 <?php
 require "partials/head.php";
-require "partials/nav.php"; ?>
+require "partials/nav.php";
+?>
 <div class="container">
-    <form action="/auth" method="post">
+    <form action="/login" method="post">
         <div class="form-group">
             <label for="login">Login</label>
-            <input type="text" class="form-control" name="login" id="login" placeholder="Enter login">
+            <input type="text" class="form-control" name="login" id="login" placeholder="Enter login" value ="<?= old('login') ?>">
         </div>
         <div class="form-group">
             <label for="password">Password</label>
@@ -18,6 +19,19 @@ require "partials/nav.php"; ?>
         <button type="submit" class="btn btn-primary btn-lg btn-block">Войти</button>
     </form>
     <a class="btn btn-outline-secondary btn-lg btn-block mt-2" href="/reg">У меня нет аккаунта</a>
-    <?php flashMsg(); ?>
+    <?php if (isset($errors['login'])): ?>
+        <div class="alert alert-danger mt-2" role="alert">
+            <?php
+            echo $errors['login'];
+            ?>
+        </div>
+    <?php elseif (isset($errors['password'])): ?>
+        <div class="alert alert-danger mt-2" role="alert">
+            <?php
+            echo $errors['password'];
+            ?>
+        </div>
+    <?php endif; ?>
 </div>
-<?php require "partials/footer.php";
+<?php
+require "partials/footer.php";

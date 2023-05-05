@@ -2,9 +2,6 @@
 
 session_start();
 
-use Core\Database;
-use Core\App;
-
 define("SALT", "dflsk;flsdk125");
 
 function dd($value) {
@@ -24,41 +21,15 @@ function view($path, $attributes = []){
     require base_Path("views/" . $path);
 }
 
-function autoLogin() {//переписать с $db
-    if (isset($_COOKIE['userKey']) && empty($_SESSION['login'])) {
-        $id = explode("_", $_COOKIE['userKey']);
-        $db = App::resolve(Database::class);
-        $result = $db->query("SELECT id, login, role_id FROM users WHERE id = :id", [
-            ":id" => $id[0]
-        ])->fetch();
-        if ($_COOKIE['userKey'] === $result['id'] . '_' . md5($result['login'] . SALT)) {
-            $_SESSION["login"] = $result["login"];
-            $_SESSION["user_id"] = $result['id'];
-            $_SESSION["role_id"] = $result['role_id'];
-        }
-    }
+function redirect($path){
+    
+    header("Location: $path");
+    exit();
 }
 
-function flashMsg() {
-    if (!empty($_SESSION['message'])) {
-        if ($_SESSION['message'] == "User registered"):
-            ?>
-            <div class="alert alert-success mt-2" role="alert">
-                <?php
-                echo $_SESSION['message'];
-                unset($_SESSION['message']);
-                ?>
-            </div>
-        <?php else: ?>
-            <div class="alert alert-danger mt-2" role="alert">
-                <?php
-                echo $msg = $_SESSION['message'];
-                unset($_SESSION['message']);
-                ?>
-            </div>
-        <?php
-        endif;
-    }
+function old($key, $deafult = ""){
+    
+    return Core\Session::get('old')[$key] ?? $deafult;
 }
 
 function getImage($type, string $size = 'small'): string {
