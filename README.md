@@ -9,4 +9,4 @@ News site with basic features:
 - Bootstrap 4.0
 - JQuery interactions
 
-~~~ Work in progers ~~
+/ ~~~ Work in progers ~~~ /
